@@ -1,0 +1,145 @@
+@model List<MyWebApp.Models.TaskData>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> - Estrazione Task Telepass</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css?v=pAGv4ietcJNk_EwsQZ5BN9-K4MuNYS2a9wl4Jw-q9D0" />
+    <link rel="stylesheet" href="/MyWebApp.styles.css?v=1KtASUcWXdTauAfqQWHJbK1KHwu-lxsdzSDf_KhtWkk" />
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script> <!-- Include SheetJS -->
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                    <a class="navbar-brand" href="/">
+                        <img src="~/images/151f3f791bf71110001c87bde54bcb3c.png" alt="Logo" style="height: 40px;" />
+                        
+                    </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <!-- Add other navbar links here if necessary -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <main role="main" class="pb-3">
+            <!-- Filter Form Section -->
+            <form method="get" action="@Url.Action("Index", "Tasks")">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" id="startDate" name="startDate" value="@ViewData["StartDate"]" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" id="endDate" name="endDate" value="@ViewData["EndDate"]" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label d-block">Filter</label>
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label d-block">Export</label>
+                        <button id="exportToExcel" class="btn btn-success w-100">Export to Excel</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Data Table Section -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Rete</th>
+                        <th>Nome Rete</th>
+                        <th>Pdv</th>
+                        <th>Id Task</th>
+                        <th>Data creazione task</th>
+                        <th>Data Consegna</th>
+                        <th>Stato BRT</th>
+                        <th>Lettera di vettura</th>
+                        <th>Quantità OBU</th>
+                        <th>Tipologia OBU</th>
+                        <th>Stato Task</th>
+                        <th>Tipologia Task</th>
+                        <th>Primo approvvigionamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var task in Model)
+                    {
+                        <tr>
+                            <td>@task.Rete</td>
+                            <td>@task.NomeRete</td>
+                            <td>@task.Pdv</td>
+                            <td>@task.IdTask.ToString()</td>
+                            <td>@(task.DataCreazioneTask.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                            <td>@(task.DataConsegna?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                            <td>@task.StatoBRT</td>
+                            <td>@task.LetteraDiVettura</td>
+                            <td>@task.QuantitaOBU</td>
+                            <td>@task.TipologiaOBU</td>
+                            <td>@task.StatoTask</td>
+                            <td>@task.TipologiaTask</td>
+                            <td>@task.PrimoApprovvigionamento</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js?v=hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
+
+    <script>
+        // Initialize the date pickers
+        $(function() {
+            $('#startDate').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: { format: 'YYYY-MM-DD' }
+            });
+
+            $('#endDate').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: { format: 'YYYY-MM-DD' }
+            });
+        });
+
+        // Export to Excel functionality
+        document.getElementById('exportToExcel').addEventListener('click', function() {
+            var table = document.querySelector("table");
+
+            // Convert table data to an array of arrays (rows and columns)
+            var rows = Array.from(table.rows).map(row => 
+                Array.from(row.cells).map(cell => cell.innerText.toString())  // Convert each cell's content to string
+            );
+
+            // Create a worksheet from the array of arrays
+            var ws = XLSX.utils.aoa_to_sheet(rows);
+
+            // Create a new workbook and append the worksheet to it
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Tasks");
+
+            // Write the workbook to an Excel file
+            XLSX.writeFile(wb, "Task_Export.xlsx");
+        });
+    </script>
+</body>
+</html>
