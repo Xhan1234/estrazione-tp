@@ -25,6 +25,8 @@ namespace MyWebApp.Controllers
 
             try
             {
+                var adjustedEndDate = endDate.Value.AddDays(1).ToString("yyyy-MM-dd");
+
                 var tasksQuery = _context.TaskDatas
                     .FromSqlRaw(@"
                                 SELECT 
@@ -93,12 +95,12 @@ namespace MyWebApp.Controllers
                                 INNER JOIN Networks n WITH(NOLOCK) ON pd.NetworkId = n.Id
                                 INNER JOIN NetworkDetails nd WITH(NOLOCK) ON nd.NetworkId = n.Id AND nd.IsLast = 1
                                 WHERE pst.IsLast = 1
-                                AND lt.CreatedOn BETWEEN {0} AND {1}
+                                AND lt.CreatedOn >= {0} AND lt.CreatedOn < {1}
                                 AND pd.Status = 0
                                 GROUP BY 
                                     n.Code, nd.Name, p.Code, lt.Id, lt.CreatedOn, pst.DeliveryWaybill, 
                                     pst.TaskStatus, pst.IsFirstSupply
-                                ORDER BY p.Code, lt.CreatedOn;", startDate, endDate);
+                                ORDER BY p.Code, lt.CreatedOn;", startDate, adjustedEndDate);
 
                 var tasks = await tasksQuery.ToListAsync();
 

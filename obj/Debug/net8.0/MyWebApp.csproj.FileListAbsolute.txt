@@ -298,6 +298,7 @@ C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\MyW
 C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\MyWebApp.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\MyWebApp.RazorAssemblyInfo.cache
 C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\MyWebApp.RazorAssemblyInfo.cs
+C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\MyWebApp.sourcelink.json
 C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\xhanluka.halla\Desktop\queries estrazione\MyWebApp\obj\Debug\net8.0\staticwebassets\msbuild.MyWebApp.Microsoft.AspNetCore.StaticWebAssets.props
